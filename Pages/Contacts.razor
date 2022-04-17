@@ -1,0 +1,54 @@
+﻿@page "/"
+@using ContactManagementApp.Data
+@inject ContactService contactService
+<h1>Contact List</h1>
+@if (contacts is null)
+{
+    <p><img src=https://upload.wikimedia.org/wikipedia/commons/b/b1/Loading_icon.gif  alt = "Loading animation"> </p>
+}
+else
+{
+    <NavLink class="nav-link"  href="/AddContact">
+        <span class="oi oi-plus" aria-hidden="true">Add New</span>
+    </NavLink>
+
+    <table class="table">
+        <thead>
+            <tr>
+                <th>First Name</th>
+                <th>Last Name</th>
+                <th>Birthdate</th>
+                <th>Phone No.</th>
+                <th>Action</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var contact in contacts)
+            {
+                <tr>
+                    <td>@contact.FirstName</td>
+                    <td>@contact.LastName</td>
+                    <td>@contact.BirthDate.ToShortDateString()</td>
+                    <td>@contact.PhoneNumber</td>
+                    <td>
+                        <a class="nav-link" href="EditContact/@contact.Id">
+                            <span class="oi oi-pencil" aria-hidden="true">Edit</span>
+                        </a>
+                        <a class="nav-link" href="DeleteContact/@contact.Id">
+                            <span class="oi oi-trash" aria-hidden="true">Delete</span>
+                        </a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+
+@code {
+    List<Contact> contacts;
+    protected override async Task OnInitializedAsync()
+    {
+        contacts = await Task.Run(() => contactService.GetAllContactsAsync());
+    }
+}

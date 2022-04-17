@@ -1,0 +1,62 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
+
+namespace ContactManagementApp.Data
+{
+    public class ContactService
+    {
+        private readonly AppDBContext _appDBContext;
+
+        //Constructor
+        public ContactService(AppDBContext appDBContext)
+        {
+            _appDBContext = appDBContext;
+        }
+        
+
+        //Get List of contacts
+        public async Task<List<Contact>> GetAllContactsAsync()
+        {
+            return await _appDBContext.Contacts.ToListAsync();
+        }
+        
+
+        //Add Contact
+        public async Task<bool> AddContactAsync(Contact contact)
+        {
+            await _appDBContext.Contacts.AddAsync(contact);
+            await _appDBContext.SaveChangesAsync();
+            return true;
+        }
+        
+
+        //Get Contact by Id
+        public async Task<Contact> GetContactAsync(int Id)
+        {
+            Contact contact = await _appDBContext.Contacts.FirstOrDefaultAsync(c => c.Id.Equals(Id));
+            return contact;
+        }
+        
+
+        //Update Contact
+        public async Task<bool> UpdateContactAsync(Contact contact)
+        {
+            _appDBContext.Contacts.Update(contact);
+            await _appDBContext.SaveChangesAsync();
+            return true;
+        }
+        
+
+        //Delete Contact
+        public async Task<bool> DeleteContactAsync(Contact contact)
+        {
+            _appDBContext.Remove(contact);
+            await _appDBContext.SaveChangesAsync();
+            return true;
+        }
+        
+    }
+}
